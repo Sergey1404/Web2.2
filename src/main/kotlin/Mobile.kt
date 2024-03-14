@@ -1,55 +1,51 @@
 import org.slf4j.LoggerFactory
-
-data class Contact(val name: String, val phone: String)
-
-class MobilePhone(private val myName: String, private val myPhone: String) {
-    private val logger = LoggerFactory.getLogger(MobilePhone::class.java)
-    private val myContacts: MutableList<Contact> = ArrayList()
-
-    fun addContact(newContact: Contact): Boolean {
-        if (myContacts.any { it.phone == newContact.phone }) {
-            return false
+import kotlin.random.Random
+data class Contact(var name: String, var number: String, val id: Int = Random.nextInt())
+class MobilePhone(myNumber: String) {
+    private val myContacts = mutableListOf(Contact("Marusa", myNumber))
+    fun addNewContact(newContact: Contact) = myContacts.add(newContact)
+    fun updateContact(oldContact: Contact, newContact: Contact, type: UpdateType): Boolean {
+        var isUpdated = false
+        when (type) {
+            UpdateType.All -> {
+                isUpdated = myContacts.removeIf { it == oldContact }
+                if (isUpdated) {
+                    myContacts.add(newContact)
+                }
+            }
+            UpdateType.Phone -> {
+                val currentContact = queryContact(oldContact.name)
+                if (currentContact != null) {
+                    currentContact.number = newContact.number
+                    isUpdated = true
+                }
+            }
+            UpdateType.Name -> {
+                val currentContact = queryContact(oldContact.name)
+                if (currentContact != null) {
+                    currentContact.name = newContact.name
+                    isUpdated = true
+                }
+            }
         }
-        myContacts.add(newContact)
-        logger.info("Adding contact: ${newContact.name} with phone number: ${newContact.phone}")
-        return true
+        return isUpdated
     }
-
-    fun updateContact(oldContact: Contact, newContact: Contact): Boolean {
-        val index = myContacts.indexOfFirst { it.phone == oldContact.phone }
-        if (index == -1) {
-            return false
-        }
-        myContacts[index] = newContact
-        logger.info("Updating contact: ${newContact.name} with phone number: ${newContact.phone}")
-        return true
-    }
-
-    fun removeContact(contact: Contact): Boolean {
-        val index = myContacts.indexOfFirst { it.phone == contact.phone }
-        if (index == -1) {
-            return false
-        }
-        myContacts.removeAt(index)
-        logger.info("Removing contact: $contact")
-        return true
-    }
-
-    fun findContact(contact: Contact): Int {
-        return myContacts.indexOfFirst { it.phone == contact.phone }
-    }
-
-    fun queryContact(name: String): Contact? {
-        return myContacts.firstOrNull { it.name == name }
-    }
-
-    fun printContacts() {
-        myContacts.forEach { println("${it.name}: ${it.phone}") }
-    }
-
     fun updateContact(newContact: Contact) {
         myContacts.replaceAll {
-            if (it.name == newContact.name || it.phone == newContact.phone) newContact else it
+            if (it.id == newContact.id) newContact else it
         }
     }
+    fun removeContact(contact: Contact) = myContacts.remove(contact)
+    fun findContact(contact: Contact): Int = myContacts.indexOf(contact)
+    fun queryContact(query: String): Contact? = myContacts.firstOrNull { it.name == query }
+    fun printContacts() {
+        myContacts.forEach {
+            println(it)
+            println('\n')
+        }
+        println("===================")
+    }
+}
+enum class UpdateType {
+    All, Phone, Name
 }
