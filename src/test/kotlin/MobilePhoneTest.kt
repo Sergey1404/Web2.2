@@ -6,7 +6,7 @@ class MobilePhoneTest {
     private val mobilePhone = MobilePhone("Anna", "89235897654")
 
     @Test
-    fun addContact() {
+    fun addNewContact() {
         val contact = Contact("Sveta", "89235069212")
         assertTrue(mobilePhone.addContact(contact))
         assertFalse(mobilePhone.addContact(contact)) //exist
