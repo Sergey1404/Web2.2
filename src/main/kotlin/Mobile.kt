@@ -1,4 +1,3 @@
-import org.slf4j.LoggerFactory
 import kotlin.random.Random
 data class Contact(var name: String, var number: String, val id: Int = Random.nextInt())
 class MobilePhone(myNumber: String) {
