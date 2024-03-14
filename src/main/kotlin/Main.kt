@@ -1,12 +1,21 @@
 fun main() {
-    println("Mobile")
-    val phone = MobilePhone("Anna", "89236092710")
-    phone.addContact(Contact("Sveta", "89234562134"))
-    phone.printContacts()
-    print("\n")
-    phone.updateContact(Contact("Sveta", "89234562134"), Contact("Svetlana", "89236912366"))
-
-    phone.printContacts()
-    println("index = ${phone.findContact(Contact("Dasha", "89231654782"))}")
-    println("${phone.queryContact("Dasha")}")
+    MobilePhone("1111111111").apply {
+        val Serg = Contact("Sergey", "89132906298")
+        val Den = Contact("Denis", "89131397846")
+        addNewContact(Serg)
+        printContacts()
+        updateContact(Serg, Den, UpdateType.All)
+        printContacts()
+        updateContact(Serg, Den, UpdateType.Name)
+        printContacts()
+        printContacts()
+        queryContact(Serg.name)?.let(::println)
+        findContact(Den).let(::println)
+        removeContact(Den)
+        printContacts()
+        val leha = Contact("Arbuz", "123456789")
+        addNewContact(leha)
+        updateContact(leha.copy(name = "Lom"))
+        printContacts()
+    }
 }
